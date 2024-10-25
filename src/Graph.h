@@ -6,6 +6,7 @@
 //  You should not add any additional methods to this class.
 //
 //  Copyright 2019 David Kopec
+// Jessica McIlree
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation files
@@ -76,7 +77,17 @@ namespace csi281 {
         // Determines whether there is an edge between *from* and *to*
         // if either is not in the graph, return false
         bool edgeExists(const V &from, const V &to) {
-            // YOUR CODE HERE
+            
+            if (adjacencyList.find(to) ==  adjacencyList.end() || adjacencyList.find(from) ==  adjacencyList.end()) { //if either is not in graph
+                return false;
+            }
+
+            const unordered_set<V>& checkNeighbors = neighbors(from); //get all edges of from
+            if (checkNeighbors.find(to) != checkNeighbors.end()) { //check if to is an edge
+                return true;
+            }
+            else
+                return false;
         }
         
         using Path = list<V>;
@@ -104,9 +115,30 @@ namespace csi281 {
             // the start node came from nowhere, so we mark its parent as itself
             explored[start] = start;
             
-            // YOUR CODE HERE
-            // TIP: Start by defining a frontier and putting start onto it.
-            // TIP: Follow the pseudocode from the slides from class
+            stack<V> frontier; //define frontier queue
+            frontier.push(start); //put start onto it
+            
+            while (!frontier.empty()) { //keep going while there is more to explore
+
+                V current = frontier.top(); //part being explored https://cplusplus.com/reference/stack/stack/top/ 
+                frontier.pop(); //remove after explored
+
+                if (current == goal) { //if we find it return path
+                    return pathMapToPath(explored, current);
+                }
+                
+                for (const V& neighbor : neighbors(current)) { //check where to go next from the neighbors
+                    
+                    if (explored.find(neighbor) != explored.end()) { // skip already explored
+                        continue;
+                    }
+                    
+                     explored[neighbor] = current; // add current node to explored
+                     frontier.push(neighbor); // add to frontier
+                    
+                }
+            }
+            return nullopt; //no path found
         }
         
         // Perform a breadth-first search from *start*, looking for *goal*
@@ -117,11 +149,31 @@ namespace csi281 {
             unordered_map<V, V> explored = unordered_map<V, V>();
             // the start node came from nowhere, so we mark its parent as itself
             explored[start] = start;
-            
-            // YOUR CODE HERE
-            // TIP: Start by defining a frontier and putting start onto it.
-            // TIP: Follow the pseudocode from the slides from class
-            // TIP: This should be very similar to dfs
+           
+            queue<V> frontier; //define frontier queue
+            frontier.push(start); //put start onto it
+
+            while (!frontier.empty()) { //keep going while there is more to explore
+
+                V current = frontier.front(); //part being explored
+                frontier.pop(); //remove after explored
+
+                if (current == goal) { //if we find it return path
+                    return pathMapToPath(explored, current);
+                }
+
+                for (const V& neighbor : neighbors(current)) { //check where to go next from the neighbors
+
+                    if (explored.find(neighbor) != explored.end()) { // skip already explored
+                        continue;
+                    }
+
+                    explored[neighbor] = current; // add current node to explored
+                    frontier.push(neighbor); // add to frontier
+
+                }
+            }
+            return nullopt; //no path found
         }
         
         // Utility function if you need it
