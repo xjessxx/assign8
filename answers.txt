@@ -12,4 +12,4 @@ Adjacency lists are more memory efficient for large sparce graphs, like a list o
 as they have flexible growth while a matrix might have to re-allocate space to add more friends and hold  alot of filler space where there are no connections.
 
 4. Give an example of depth-first search in the real world (not on a computer).
-Roomba vacuum.
+Roomba vacuum or dowsing for water.
